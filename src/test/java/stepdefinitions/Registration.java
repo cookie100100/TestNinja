@@ -3,24 +3,27 @@ package stepdefinitions;
 import form.GenericFormWrapper;
 import form.RegistrationForm;
 import hooks.Hooks;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.*;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import utilities.DriverManager;
+import validators.RegistrationValidator;
 import validators.impl.*;
 
 import java.util.List;
 
 
 public class Registration {
-    private final GenericFormWrapper<RegistrationForm> wrapper;
-    public Registration() {
-        WebDriver driver= DriverManager.getDriver();
-        this.wrapper=new GenericFormWrapper<>(new RegistrationForm(driver));
-    }
+    private GenericFormWrapper<RegistrationForm> wrapper;
+
 
     @Given("the user is on registration page")
     public void theUserIsOnRegistrationPage() {
+        WebDriver driver= DriverManager.getDriver();
+        wrapper = new GenericFormWrapper<>(new RegistrationForm(driver));
         wrapper.getForm().open();
     }
 
@@ -62,6 +65,7 @@ public class Registration {
                 new FirstNameLengthValidator(),
                 new LastNameLengthValidator(),
                 new EmailFormatValidator(),
+                new DuplicateEmailValidator(),
                 new TelephoneLengthValidator(),
                 new PasswordLengthValidator(),
                 new PasswordConfirmMatchValidator(),

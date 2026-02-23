@@ -5,6 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.time.Duration;
+
 public class DriverManager {
     // ThreadLocal ensures each test gets its own browser instance
     private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();

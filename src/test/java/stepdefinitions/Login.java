@@ -17,7 +17,7 @@ public class Login {
     }
 
     @Given("the user is on login page")
-    public void theUserIsOnRegistrationPage() {
+    public void theUserIsOnLoginPage() {
         wrapper.getForm().open();
     }
 

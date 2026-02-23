@@ -4,6 +4,8 @@ import form.RegistrationForm;
 import org.junit.Assert;
 import validators.RegistrationValidator;
 
+import java.util.List;
+
 public class PasswordConfirmMatchValidator implements RegistrationValidator {
     @Override
     public String name(){
@@ -16,7 +18,11 @@ public class PasswordConfirmMatchValidator implements RegistrationValidator {
     }
     @Override
     public void assertError(RegistrationForm form) {
-        String err=form.getFieldErrorMessage("confirmPassword");
-        Assert.assertTrue("Expected confirm password mismatch error, got:"+err, err.contains("Password confirmation does not match password!"));
+        List<String> err=form.getFieldErrorMessage();
+        boolean found = err.stream()
+                .anyMatch(e -> e.contains("Password confirmation does not match password!"));
+
+        Assert.assertTrue("Expected password confirm match error, got: " + err, found);
+        //Assert.assertTrue("Expected confirm password mismatch error, got:"+err, err.contains("Password confirmation does not match password!"));
     }
 }

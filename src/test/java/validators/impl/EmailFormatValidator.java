@@ -4,6 +4,8 @@ import form.RegistrationForm;
 import org.junit.Assert;
 import validators.RegistrationValidator;
 
+import java.util.List;
+
 public class EmailFormatValidator implements RegistrationValidator {
     @Override
     public String name(){
@@ -15,7 +17,10 @@ public class EmailFormatValidator implements RegistrationValidator {
     }
     @Override
     public void assertError(RegistrationForm form) {
-        String err= form.getFieldErrorMessage("email");
-        Assert.assertTrue("Expected email error, got: " +err, err.contains("E-Mail Address does not appear to valid!"));
+        List<String> err= form.getFieldErrorMessage();
+        boolean found = err.stream()
+                .anyMatch(e -> e.contains("E-Mail Address does not appear to be valid!"));
+
+        Assert.assertTrue("Expected email error, got: " + err, found);
     }
 }

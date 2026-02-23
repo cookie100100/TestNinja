@@ -4,18 +4,20 @@ import form.RegistrationForm;
 import org.junit.Assert;
 import validators.RegistrationValidator;
 
-public class PrivacyPolicyUncheckValidator implements RegistrationValidator {
+
+public class DuplicateEmailValidator implements RegistrationValidator {
     @Override
     public String name(){
-        return "Privacy Policy Uncheck";
+        return "Duplicate Email";
     }
     @Override
     public void makeInvalid(RegistrationForm form){
-        form.uncheck("privacyPolicy");
+        form.fillField("email","longyang.xu12@gmail.com");
     }
     @Override
     public void assertError(RegistrationForm form){
         String page=form.getPageErrorMessage();
-        Assert.assertTrue("Expected page warning for privacy policy, got:"+page, page.contains("Warning") && page.contains("You must agree to the Privacy Policy!"));
+        Assert.assertTrue("Expected page warning for email already registered, got:"+page, page.contains("Warning") && page.contains("E-Mail Address is already registered!"));
     }
 }
+
