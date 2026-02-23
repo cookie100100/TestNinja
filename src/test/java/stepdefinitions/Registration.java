@@ -2,15 +2,10 @@ package stepdefinitions;
 
 import form.GenericFormWrapper;
 import form.RegistrationForm;
-import hooks.Hooks;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
 import io.cucumber.java.en.*;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import utilities.DriverManager;
-import validators.RegistrationValidator;
 import validators.impl.*;
 
 import java.util.List;
