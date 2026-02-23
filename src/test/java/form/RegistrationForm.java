@@ -3,7 +3,9 @@ package form;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.Map;
 
 public class RegistrationForm {
@@ -31,6 +33,7 @@ public class RegistrationForm {
     private final By submitButton = By.cssSelector("input[type='submit']");
     private final By successMessage = By.cssSelector("#content h1");
     private final By errorMessage = By.cssSelector(".error");
+    private final By pageWarning = By.cssSelector(".alert.alert-danger");
 
     public RegistrationForm(WebDriver driver) {
         this.driver = driver;
@@ -67,6 +70,17 @@ public class RegistrationForm {
         }
     }
 
+    public void uncheck(String fieldKey) {
+        By locator = checkboxMap.get(fieldKey);
+        if (locator == null) {
+            throw new IllegalArgumentException("Unknown checkbox: " + fieldKey);
+        }
+        WebElement checkbox=driver.findElement(locator);
+        if(checkbox.isSelected()){
+            checkbox.click();
+        }
+    }
+
     public void submit() {
         driver.findElement(submitButton).click();
     }
@@ -83,5 +97,27 @@ public class RegistrationForm {
         return driver.findElements(locator)
                 .stream()
                 .anyMatch(WebElement::isDisplayed);
+    }
+
+    public String getPageErrorMessage(){
+        return driver.findElements(pageWarning).stream()
+                .filter(WebElement::isDisplayed)
+                .map(e->e.getText().trim())
+                .findFirst()
+                .orElse("");
+    }
+
+    public String getFieldErrorMessage(String fieldKey){
+        By inputLocator = fieldMap.get(fieldKey);
+        if(inputLocator == null) throw new IllegalArgumentException("Unknown field: " + fieldKey);
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(d->!d.findElements(inputLocator).isEmpty());
+        WebElement input=driver.findElement(inputLocator);
+        String inputId=input.getAttribute("id");
+        By errorLocator=By.xpath("//input[@id='"+inputId+"']/following-sibling::div[contains(@class,'text-danger')]");
+        return driver.findElements(errorLocator).stream()
+                .filter(WebElement::isDisplayed)
+                .map(e->e.getText().trim())
+                .findFirst()
+                .orElse("");
     }
 }

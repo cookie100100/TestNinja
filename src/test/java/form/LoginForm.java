@@ -10,6 +10,7 @@ public class LoginForm {
     private final WebDriverWait wait;
 
     private static final String LOGIN_URL = "https://tutorialsninja.com/demo/index.php?route=account/login";
+    private final By errorAlert=By.cssSelector(".alert-danger");
 
     public LoginForm(WebDriver driver) {
         this.driver = driver;
@@ -39,7 +40,8 @@ public class LoginForm {
     }
 
     public String getLoginErrorMessage() {
-        return driver.findElement(By.cssSelector(".alert-danger")).getText();
+        wait.until(driver -> !driver.findElements(errorAlert).isEmpty());
+        return driver.findElement(errorAlert).getText();
     }
 
     public boolean isLoginSuccessful() {

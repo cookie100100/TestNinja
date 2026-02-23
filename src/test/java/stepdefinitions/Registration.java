@@ -7,6 +7,9 @@ import io.cucumber.java.en.*;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import utilities.DriverManager;
+import validators.impl.*;
+
+import java.util.List;
 
 
 public class Registration {
@@ -23,7 +26,11 @@ public class Registration {
 
     @And("the user enter {string} in the register field {string}")
     public void theUserEnterInTheRegisterField(String value, String fieldKey) {
-        wrapper.getForm().fillField(fieldKey, value);
+        if("AUTO_EMAIL".equals(value) && "email".equals(fieldKey)){
+            value="test" + System.currentTimeMillis()+"@test.com";
+        }
+        String actualValue = value.equals("\"\"")? "": value.replace("\"", "");
+        wrapper.getForm().fillField(fieldKey, actualValue);
     }
 
     @And("the user agree to the terms and conditions")
@@ -46,5 +53,20 @@ public class Registration {
             Assert.assertTrue("Expected ERROR but did not see error message.",
                     registrationForm.isMessageDisplayed("error"));
         }
+    }
+
+    @Then("all registration validations should show correct error messages")
+    public void allRegistrationValidationsShouldShowCorrectErrorMessages() {
+        RegistrationForm form=wrapper.getForm();
+        var validators = List.of(
+                new FirstNameLengthValidator(),
+                new LastNameLengthValidator(),
+                new EmailFormatValidator(),
+                new TelephoneLengthValidator(),
+                new PasswordLengthValidator(),
+                new PasswordConfirmMatchValidator(),
+                new PrivacyPolicyUncheckValidator()
+        );
+        new validators.RegistrationValidationRunner(form, validators).runAll();
     }
 }
