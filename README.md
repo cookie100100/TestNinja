@@ -1,7 +1,7 @@
 Automation Framework — TutorialNinja
 Overview
 
-This project implements an end-to-end UI automation framework for TutorialNinja demo site using Java, Selenium, Cucumber, and Gradle.
+This project implements an end-to-end UI automation framework for Ninja demo site using Java, Selenium, Cucumber, and Gradle.
 The framework validates user registration and login workflows including field-level validations and successful account creation.
 
 Tech Stack
@@ -18,7 +18,7 @@ Tech Stack
 
 How to run
 
-    ./gradlew test
+    ./gradlew clean test
 
 Test Coverage
 Registration
