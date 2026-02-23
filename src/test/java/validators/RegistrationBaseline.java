@@ -1,7 +1,11 @@
 package validators;
 
 import form.RegistrationForm;
-
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe registration baseline with valid data.
+ */
 public final class RegistrationBaseline {
     private RegistrationBaseline() {}
     public static void fillValid(RegistrationForm form){

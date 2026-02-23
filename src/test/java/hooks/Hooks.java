@@ -7,6 +7,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import utilities.DriverManager;
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe Hooks.
+ */
 
 public class Hooks {
 

@@ -5,6 +5,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe Login Form.
+ */
+
 public class LoginForm {
     private final WebDriver driver;
     private final WebDriverWait wait;

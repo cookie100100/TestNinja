@@ -10,6 +10,12 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe Registration Form.
+ */
+
 public class RegistrationForm {
 
     private final WebDriver driver;

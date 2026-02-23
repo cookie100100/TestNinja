@@ -8,6 +8,11 @@ import io.cucumber.java.en.Then;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import utilities.DriverManager;
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe Login Step Definition
+ */
 
 public class Login {
     private final GenericFormWrapper<LoginForm> wrapper;

@@ -5,7 +5,11 @@ import org.junit.Assert;
 import validators.RegistrationValidator;
 
 import java.util.List;
-
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe validate telephone length
+ */
 public class TelephoneLengthValidator implements RegistrationValidator {
     @Override
     public String name(){

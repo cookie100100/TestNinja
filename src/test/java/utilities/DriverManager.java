@@ -3,7 +3,11 @@ package utilities;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe Driver Manager
+ */
 public class DriverManager {
     // ThreadLocal ensures each test gets its own browser instance
     private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();

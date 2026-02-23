@@ -3,7 +3,11 @@ package validators.impl;
 import form.RegistrationForm;
 import org.junit.Assert;
 import validators.RegistrationValidator;
-
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe Validate email already registered.
+ */
 
 public class DuplicateEmailValidator implements RegistrationValidator {
     @Override

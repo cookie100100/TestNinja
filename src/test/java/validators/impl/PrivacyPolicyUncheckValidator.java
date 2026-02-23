@@ -3,7 +3,11 @@ package validators.impl;
 import form.RegistrationForm;
 import org.junit.Assert;
 import validators.RegistrationValidator;
-
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe validate checked privacy policy box
+ */
 public class PrivacyPolicyUncheckValidator implements RegistrationValidator {
     @Override
     public String name(){

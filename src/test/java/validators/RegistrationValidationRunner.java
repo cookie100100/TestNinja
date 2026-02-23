@@ -3,7 +3,11 @@ package validators;
 import form.RegistrationForm;
 
 import java.util.List;
-
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe Registration Validation runner.
+ */
 public class RegistrationValidationRunner {
     private final RegistrationForm form;
     private final List<RegistrationValidator> validators;

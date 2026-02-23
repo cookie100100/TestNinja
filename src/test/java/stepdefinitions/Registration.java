@@ -10,6 +10,11 @@ import validators.impl.*;
 
 import java.util.List;
 
+/*
+ * @author     Laura Xu
+ * @date     2026/02/23
+ * @describe Registration Step Definition
+ */
 
 public class Registration {
     private GenericFormWrapper<RegistrationForm> wrapper;
