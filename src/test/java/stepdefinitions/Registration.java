@@ -1,6 +1,5 @@
 package stepdefinitions;
 
-import form.GenericFormWrapper;
 import form.RegistrationForm;
 import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;

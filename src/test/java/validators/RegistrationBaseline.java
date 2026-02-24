@@ -1,8 +1,6 @@
 package validators;
 
 import form.RegistrationForm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*
  * @author     Laura Xu

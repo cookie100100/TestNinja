@@ -1,10 +1,8 @@
 package utilities;
 
-import hooks.Hooks;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DriverManager {
     // ThreadLocal ensures each test gets its own browser instance
-    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
     private static final Logger log = LoggerFactory.getLogger(DriverManager.class);
     /**
      * Gets the browser driver
@@ -39,8 +37,7 @@ public class DriverManager {
         log.info("Creating new Chrome driver instance");
         // This automatically downloads the correct ChromeDriver
         WebDriverManager.chromedriver().setup();
-        WebDriver webDriver = new ChromeDriver();
-        return webDriver;
+        return new ChromeDriver();
     }
     /**
      * Closes the browser and cleans up

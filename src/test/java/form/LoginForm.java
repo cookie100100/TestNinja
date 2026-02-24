@@ -3,12 +3,10 @@ package form;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 
 /*
@@ -54,6 +52,10 @@ public class LoginForm extends GenericFormWrapper<LoginForm>{
 
     public boolean isLoginSuccessful() {
         log.debug("Checking if login successful");
-        return wait(Duration.ofSeconds(5)).until(driver -> driver.getCurrentUrl().contains("route=account/account"));
+        return wait(Duration.ofSeconds(5)).until(driver -> {
+            String url= driver.getCurrentUrl();
+            log.debug("current url: {}", url);
+            return url!=null && url.contains("route=account/account");
+        });
     }
 }
