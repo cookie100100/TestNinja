@@ -5,19 +5,15 @@ import org.junit.jupiter.api.Assertions;
 import validators.RegistrationValidator;
 
 import java.util.List;
-/*
- * @author     Laura Xu
- * @date     2026/02/23
- * @describe Validate invalid email format
- */
-public class EmailFormatValidator implements RegistrationValidator {
+
+public class EmptyEmailValidator implements RegistrationValidator {
     @Override
     public String name(){
-        return "Email Format";
+        return "Email empty";
     }
     @Override
     public void makeInvalid(RegistrationForm form) {
-        form.fillField("email","111@11.11");
+        form.fillField("email","");
     }
     @Override
     public void assertError(RegistrationForm form) {

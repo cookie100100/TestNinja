@@ -1,8 +1,13 @@
 package utilities;
 
+import hooks.Hooks;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * @author     Laura Xu
  * @date     2026/02/23
@@ -11,14 +16,18 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class DriverManager {
     // ThreadLocal ensures each test gets its own browser instance
     private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
-
+    private static final Logger log = LoggerFactory.getLogger(DriverManager.class);
     /**
      * Gets the browser driver
      * Creates a new one if it doesn't exist
      */
     public static WebDriver getDriver() {
+        log.info("Getting driver");
         if (driver.get() == null) {
             driver.set(createDriver());
+            log.debug("Chrome driver session created: {}", driver);
+        }else{
+            log.debug("Reusing existing Chrome driver session");
         }
         return driver.get();
     }
@@ -27,10 +36,10 @@ public class DriverManager {
      * Creates and configures the browser
      */
     private static WebDriver createDriver() {
+        log.info("Creating new Chrome driver instance");
         // This automatically downloads the correct ChromeDriver
-        WebDriverManager.chromedriver().clearDriverCache().setup();
+        WebDriverManager.chromedriver().setup();
         WebDriver webDriver = new ChromeDriver();
-        System.out.println("Chrome browser launched successfully");
         return webDriver;
     }
     /**
@@ -38,9 +47,11 @@ public class DriverManager {
      */
     public static void quitDriver() {
         if (driver.get() != null) {
+            log.info("Closing Webdriver session");
             driver.get().quit();
             driver.remove();
-            System.out.println("Browser closed successfully");
+        }else{
+            log.warn("quitDriver() called but WebDriver was null");
         }
     }
 }

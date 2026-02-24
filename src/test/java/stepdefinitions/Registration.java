@@ -3,9 +3,12 @@ package stepdefinitions;
 import form.GenericFormWrapper;
 import form.RegistrationForm;
 import io.cucumber.java.en.*;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utilities.DriverManager;
+import utilities.ScenarioData;
 import validators.impl.*;
 
 import java.util.List;
@@ -17,60 +20,75 @@ import java.util.List;
  */
 
 public class Registration {
-    private GenericFormWrapper<RegistrationForm> wrapper;
+    private RegistrationForm registrationForm;
+    private static final Logger log = LoggerFactory.getLogger(Registration.class);
 
-
-    @Given("the user is on registration page")
-    public void theUserIsOnRegistrationPage() {
-        WebDriver driver= DriverManager.getDriver();
-        wrapper = new GenericFormWrapper<>(new RegistrationForm(driver));
-        wrapper.getForm().open();
+    @Given("I navigate to the registration page")
+    public void iNavigateToTheRegistrationPage() {
+        log.info("Navigating to the registration page");
+        WebDriver driver = DriverManager.getDriver();
+        registrationForm=new RegistrationForm(driver);
+        registrationForm.open();
+    }
+    @When("I register a fresh account with valid data")
+    public void iRegisterAFreshAccountWithValidData() {
+        log.info("Registering a fresh account with valid data");
+        String email="cred"+System.currentTimeMillis()+"@test.com";
+        String password = "cred"+System.currentTimeMillis() % 100000;
+        registrationForm.fillField("firstName","Testcred");
+        registrationForm.fillField("lastName","Test");
+        registrationForm.fillField("email",email);
+        registrationForm.fillField("telephone","123456`");
+        registrationForm.fillField("password",password);
+        registrationForm.fillField("confirmPassword",password);
+        registrationForm.check("privacyPolicy");
+        registrationForm.submit();
+        Assertions.assertTrue(registrationForm.isSuccessPageDisplayed(),
+                "Registration failed - cannot proceed to login");
+        ScenarioData.setCredentials(email, password);
     }
 
-    @And("the user enter {string} in the register field {string}")
-    public void theUserEnterInTheRegisterField(String value, String fieldKey) {
-        if("AUTO_EMAIL".equals(value) && "email".equals(fieldKey)){
-            value="test" + System.currentTimeMillis()+"@test.com";
-        }
-        String actualValue = value.equals("\"\"")? "": value.replace("\"", "");
-        wrapper.getForm().fillField(fieldKey, actualValue);
-    }
-
-    @And("the user agree to the terms and conditions")
-    public void theUserAgreeToTheTermsAndConditions() {
-        wrapper.getForm().check("privacyPolicy");
-    }
-
-    @And("the user click the Continue button")
-    public void theUserClickTheContinueButton() {
-        wrapper.getForm().submit();
+    @And("I log out")
+    public void iLogOut() {
+        log.info("Logging out");
+        registrationForm.logout();
     }
 
     @Then("the user expect the registration to {string}")
     public void theUserExpectTheRegistrationTo(String expectedResult) {
-        RegistrationForm registrationForm=wrapper.getForm();
         if ("success".equalsIgnoreCase(expectedResult)) {
-            Assert.assertTrue("Expected SUCCESS but did not see success message.",
-                    registrationForm.isMessageDisplayed("success"));
+            boolean success = registrationForm.isSuccessPageDisplayed();
+            log.info("Expecting registration outcome = {}, actual success = {}", expectedResult, success);
+            Assertions.assertTrue(success, "Expected SUCCESS but did not see success message.");
         } else {
-            Assert.assertTrue("Expected ERROR but did not see error message.",
-                    registrationForm.isMessageDisplayed("error"));
+            String pageWarning = registrationForm.getPageWarningMessage();
+            var fieldErrors = registrationForm.getFieldErrorMessage();
+            log.info("Expecting registration outcome = {}", expectedResult);
+            log.info("Register error message is displayed:{}, {}", pageWarning, fieldErrors);
+            Assertions.assertTrue(!pageWarning.isEmpty() || !fieldErrors.isEmpty(), "Expected ERROR but did not see error message.");
         }
     }
 
     @Then("all registration validations should show correct error messages")
     public void allRegistrationValidationsShouldShowCorrectErrorMessages() {
-        RegistrationForm form=wrapper.getForm();
+        log.info("Validating registration show correct error messages");
         var validators = List.of(
                 new FirstNameLengthValidator(),
+                new EmptyFirstNameValidator(),
                 new LastNameLengthValidator(),
+                new EmptyLastNameValidator(),
                 new EmailFormatValidator(),
+                new EmptyEmailValidator(),
                 new DuplicateEmailValidator(),
                 new TelephoneLengthValidator(),
+                new EmptyTelephoneValidator(),
                 new PasswordLengthValidator(),
+                new PasswordTooLongValidator(),
+                new EmptyPasswordValidator(),
                 new PasswordConfirmMatchValidator(),
+                new EmptyConfirmPasswordValidator(),
                 new PrivacyPolicyUncheckValidator()
         );
-        new validators.RegistrationValidationRunner(form, validators).runAll();
+        new validators.RegistrationValidationRunner(registrationForm, validators).runAll();
     }
 }

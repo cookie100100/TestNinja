@@ -5,19 +5,15 @@ import org.junit.jupiter.api.Assertions;
 import validators.RegistrationValidator;
 
 import java.util.List;
-/*
- * @author     Laura Xu
- * @date     2026/02/23
- * @describe Validate first name length
- */
-public class FirstNameLengthValidator implements RegistrationValidator {
+
+public class EmptyFirstNameValidator implements RegistrationValidator {
     @Override
     public String name(){
-        return "FirstName too long";
+        return "Empty FirstName";
     }
     @Override
     public void makeInvalid(RegistrationForm form){
-        form.fillField("firstName","a".repeat(33));
+        form.fillField("firstName","");
     }
     @Override
     public void assertError(RegistrationForm form) {

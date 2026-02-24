@@ -5,23 +5,19 @@ import org.junit.jupiter.api.Assertions;
 import validators.RegistrationValidator;
 
 import java.util.List;
-/*
- * @author     Laura Xu
- * @date     2026/02/23
- * @describe validate telephone length
- */
-public class TelephoneLengthValidator implements RegistrationValidator {
+
+public class EmptyTelephoneValidator implements RegistrationValidator {
     @Override
     public String name(){
-        return "Telephone Length 3-32";
+        return "Empty Telephone Length";
     }
     @Override
     public void makeInvalid(RegistrationForm form) {
-        form.fillField("telephone", "1");
+        form.fillField("telephone", "");
     }
     @Override
     public void assertError(RegistrationForm form) {
-        List<String> err = form.getFieldErrorMessage();
+        List<String> err=form.getFieldErrorMessage();
         boolean found = err.stream()
                 .anyMatch(e -> e.contains("Telephone must be between 3 and 32 characters!"));
 

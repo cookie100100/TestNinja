@@ -1,10 +1,9 @@
 package form;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.List;
@@ -16,13 +15,13 @@ import java.util.Map;
  * @describe Registration Form.
  */
 
-public class RegistrationForm {
-
-    private final WebDriver driver;
+public class RegistrationForm extends GenericFormWrapper<RegistrationForm> {
 
     private static final String REGISTRATION_URL = "https://tutorialsninja.com/demo/index.php?route=account/register"; // change if needed
 
     private static final String LOGOUT_URL = "https://tutorialsninja.com/demo/index.php?route=account/logout";
+
+    private static final Logger log = LoggerFactory.getLogger(RegistrationForm.class);
     // Field locators mapped by key
     private final Map<String, By> fieldMap = Map.of(
             "firstName", By.id("input-firstname"),
@@ -41,34 +40,29 @@ public class RegistrationForm {
     // Buttons / messages
     private final By submitButton = By.cssSelector("input[type='submit']");
     private final By successMessage = By.cssSelector("#content h1");
-    private final By errorMessage = By.cssSelector(".error");
     private final By dangerMessage = By.cssSelector(".text-danger");
-    private final By pageWarning = By.cssSelector(".alert.alert-danger");
+    private final By warningAlert = By.cssSelector(".alert.alert-danger");
 
     public RegistrationForm(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
+    }
+
+    public void logout(){
+        driver.get(LOGOUT_URL);
     }
 
     public void open() {
-        driver.get(LOGOUT_URL);
+        log.debug("Opening form");
         driver.get(REGISTRATION_URL);
-        driver.manage().window().maximize();
-        System.out.println("Registration form opened");
+        driver.manage().window().setSize(new Dimension(1920, 1080));
     }
 
-    public void fillField(String fieldKey, String value) {
-        By locator = fieldMap.get(fieldKey);
-
-        if (locator == null) {
-            throw new IllegalArgumentException("Unknown field: " + fieldKey);
-        }
-
-        WebElement element = driver.findElement(locator);
-        element.clear();
-        element.sendKeys(value);
+    public RegistrationForm fillField(String fieldKey, String value) {
+        return super.fillField(fieldMap, fieldKey, value);
     }
 
-    public void check(String fieldKey) {
+    public RegistrationForm check(String fieldKey) {
+        log.debug("Checking field '{}'", fieldKey);
         By locator = checkboxMap.get(fieldKey);
 
         if (locator == null) {
@@ -79,9 +73,11 @@ public class RegistrationForm {
         if (!checkbox.isSelected()) {
             checkbox.click();
         }
+        return this;
     }
 
-    public void uncheck(String fieldKey) {
+    public RegistrationForm uncheck(String fieldKey) {
+        log.debug("Unchecking field '{}'", fieldKey);
         By locator = checkboxMap.get(fieldKey);
         if (locator == null) {
             throw new IllegalArgumentException("Unknown checkbox: " + fieldKey);
@@ -90,39 +86,27 @@ public class RegistrationForm {
         if(checkbox.isSelected()){
             checkbox.click();
         }
+        return this;
     }
 
+    @Override
     public void submit() {
+        log.debug("Submitting form");
         driver.findElement(submitButton).click();
     }
 
-    public boolean isMessageDisplayed(String type) {
-        return switch (type.toLowerCase()) {
-            case "success" -> isSuccessPageDisplayed();
-            case "error" -> isDisplayed(errorMessage);
-            default -> throw new IllegalArgumentException("Unknown message type: " + type);
-        };
+    public boolean isSuccessPageDisplayed(){
+        log.debug("Checking if success page displayed");
+        try{
+            new WebDriverWait(driver, Duration.ofSeconds(5)).until(d->d.getCurrentUrl().contains("route=account/success"));
+        }catch (Exception e){
+            return false;
+        }
+        return waitUntilVisible(successMessage, 10);
     }
 
-    private boolean isDisplayed(By locator) {
-        waitUntilVisible(locator, 5);
-        return driver.findElements(locator)
-                .stream()
-                .anyMatch(WebElement::isDisplayed);
-    }
-
-    private boolean isSuccessPageDisplayed(){
-        waitUntilVisible(successMessage, 5);
-        return driver.getCurrentUrl().contains("route=account/success");
-    }
-
-    public String getPageErrorMessage(){
-        waitUntilVisible(pageWarning, 5);
-        return driver.findElements(pageWarning).stream()
-                .filter(WebElement::isDisplayed)
-                .map(e->e.getText().trim())
-                .findFirst()
-                .orElse("");
+    public String getPageWarningMessage(){
+        return super.getPageWarningMessage(warningAlert, 5);
     }
 
     public List<String> getFieldErrorMessage(){
@@ -133,15 +117,7 @@ public class RegistrationForm {
                 .toList();
     }
 
-    private boolean waitUntilVisible(By locator, int seconds){
-        try{
-            new WebDriverWait(driver, Duration.ofSeconds(seconds))
-                    .until(d->d.findElements(locator)
-                            .stream()
-                            .anyMatch(WebElement::isDisplayed));
-            return true;
-        }catch(TimeoutException ex){
-            return false;
-        }
+    protected boolean waitUntilVisible(By locator, int seconds){
+        return super.waitUntilVisible(locator, seconds);
     }
 }

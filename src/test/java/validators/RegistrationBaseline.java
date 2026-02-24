@@ -1,6 +1,9 @@
 package validators;
 
 import form.RegistrationForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * @author     Laura Xu
  * @date     2026/02/23
@@ -9,7 +12,7 @@ import form.RegistrationForm;
 public final class RegistrationBaseline {
     private RegistrationBaseline() {}
     public static void fillValid(RegistrationForm form){
-        String uniqueEmail="laura"+System.currentTimeMillis()+"@test.com";
+        String uniqueEmail="test"+System.currentTimeMillis()+"@test.com";
         form.fillField("firstName","Laura");
         form.fillField("lastName","Xu");
         form.fillField("email",uniqueEmail);

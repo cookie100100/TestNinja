@@ -1,7 +1,7 @@
 package validators.impl;
 
 import form.RegistrationForm;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import validators.RegistrationValidator;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class PasswordLengthValidator implements RegistrationValidator {
     @Override
     public String name(){
-        return "Password Length 4-20";
+        return "Password too short";
     }
 
     @Override
@@ -24,11 +24,10 @@ public class PasswordLengthValidator implements RegistrationValidator {
 
     @Override
     public void assertError(RegistrationForm form) {
-        List<String> err=form.getFieldErrorMessage();
+        List<String> err = form.getFieldErrorMessage();
         boolean found = err.stream()
                 .anyMatch(e -> e.contains("Password must be between 4 and 20 characters!"));
 
-        Assert.assertTrue("Expected password length error, got: " + err, found);
-        //Assert.assertTrue("Expected password error, got: "+err, err.contains("Password must be between 4 and 20 characters!"));
+        Assertions.assertTrue(found, "Expected password length error, got: " + err);
     }
 }

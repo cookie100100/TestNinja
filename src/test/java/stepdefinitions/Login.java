@@ -2,12 +2,18 @@ package stepdefinitions;
 
 import form.GenericFormWrapper;
 import form.LoginForm;
+import form.RegistrationForm;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import org.junit.Assert;
+import io.cucumber.java.en.When;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebDriver;
 import utilities.DriverManager;
+import utilities.ScenarioData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * @author     Laura Xu
  * @date     2026/02/23
@@ -15,38 +21,45 @@ import utilities.DriverManager;
  */
 
 public class Login {
-    private final GenericFormWrapper<LoginForm> wrapper;
-    public Login(){
-        WebDriver driver= DriverManager.getDriver();
-        this.wrapper= new GenericFormWrapper<>(new LoginForm(driver));
-    }
+    private LoginForm loginForm;
+    private static final Logger log = LoggerFactory.getLogger(Login.class);
 
-    @Given("the user is on login page")
+    @Given("I navigate to the login page")
     public void theUserIsOnLoginPage() {
-        wrapper.getForm().open();
+        log.info("Navigating to the login page");
+        WebDriver driver= DriverManager.getDriver();
+        loginForm = new LoginForm(driver);
+        loginForm.open();
     }
 
-    @And("the user enter {string} in the login field {string}")
-    public void theUserEnterInTheLoginField(String value, String fieldKey) {
-        wrapper.getForm().fillField(fieldKey, value);
+    @When("I log in with valid credentials")
+    public void iLogInWithValidCredentials() {
+        log.info("Logging in with valid credentials");
+        var creds = ScenarioData.getCredentials();
+        loginForm.fillField("email", creds.email());
+        loginForm.fillField("password", creds.password());
+        loginForm.submit();
     }
-
-    @And("the user click the Login button")
-    public void theUserClickTheLoginButton() {
-        wrapper.getForm().submit();
+    @When("I log in with invalid credentials")
+    public void iLogInWithInvalidCredentials() {
+        log.info("Logging in with invalid credentials");
+        loginForm.fillField("email", "wrong@test.com");
+        loginForm.fillField("password", "wrongpassword");
+        loginForm.submit();
     }
-
-    @Then("the user expect the login to {string}")
+    @Then("I expect the login to {string}")
     public void theUserExpectTheLoginTo(String expectedResult) {
-        LoginForm loginForm = wrapper.getForm();
         if ("success".equalsIgnoreCase(expectedResult)) {
-            Assert.assertTrue("Login failed — success page not shown",
-                    loginForm.isLoginSuccessful());
+            boolean success=loginForm.isLoginSuccessful();
+            log.info("Expecting login outcome = {}, actual success = {}", expectedResult, success);
+            Assertions.assertTrue(
+                    success,
+                    "Login failed — success page not shown"
+            );
         } else {
-            String error=loginForm.getLoginErrorMessage();
-            Assert.assertFalse("Expected error message but empty",
-                    error.isEmpty());
-            System.out.println("Expected error message: " + error);
+            String error=loginForm.getPageWaringMessage();
+            log.info("Login error message is displayed:{}", error);
+            Assertions.assertTrue(error.contains("No match for E-Mail Address and/or Password."), "Expected error message but empty");
         }
     }
 }

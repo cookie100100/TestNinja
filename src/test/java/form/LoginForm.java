@@ -1,9 +1,15 @@
 package form;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
  * @author     Laura Xu
@@ -11,46 +17,43 @@ import java.time.Duration;
  * @describe Login Form.
  */
 
-public class LoginForm {
-    private final WebDriver driver;
-    private final WebDriverWait wait;
+public class LoginForm extends GenericFormWrapper<LoginForm>{
 
     private static final String LOGIN_URL = "https://tutorialsninja.com/demo/index.php?route=account/login";
-    private final By errorAlert=By.cssSelector(".alert-danger");
+    private final Map<String, By> fieldMap=Map.of(
+            "email", By.id("input-email"),
+            "password", By.id("input-password")
+    );
+    private final By warningAlert=By.cssSelector(".alert-danger");
+    private static final Logger log = LoggerFactory.getLogger(LoginForm.class);
 
     public LoginForm(WebDriver driver) {
-        this.driver = driver;
-        this.wait=new WebDriverWait(driver, Duration.ofSeconds(5));
+        super(driver);
     }
 
     public void open(){
+        log.debug("Opening login form");
         driver.get(LOGIN_URL);
-        driver.manage().window().maximize();
+        driver.manage().window().setSize(new Dimension(1920, 1080));
         System.out.println("Login form opened");
     }
 
-    public void fillField(String fieldName, String value) {
-        By locator = switch(fieldName.toLowerCase()) {
-            case "email" -> By.id("input-email");
-            case "password" -> By.id("input-password");
-            default -> throw new IllegalArgumentException("Unknown field: " + fieldName);
-        };
-        driver.findElement(locator).clear();
-        driver.findElement(locator).sendKeys(value);
-        System.out.println("Field filled");
+    public LoginForm fillField(String fieldName, String value) {
+        return super.fillField(fieldMap, fieldName.toLowerCase(), value);
     }
-
+    @Override
     public void submit() {
+        log.debug("Submitting login form");
         driver.findElement(By.cssSelector("input[value='Login']")).click();
         System.out.println("Login submitted");
     }
 
-    public String getLoginErrorMessage() {
-        wait.until(driver -> !driver.findElements(errorAlert).isEmpty());
-        return driver.findElement(errorAlert).getText();
+    public String getPageWaringMessage() {
+        return super.getPageWarningMessage(warningAlert,5);
     }
 
     public boolean isLoginSuccessful() {
-        return wait.until(driver -> driver.getCurrentUrl().contains("route=account/account"));
+        log.debug("Checking if login successful");
+        return wait(Duration.ofSeconds(5)).until(driver -> driver.getCurrentUrl().contains("route=account/account"));
     }
 }
