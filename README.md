@@ -6,7 +6,7 @@ The framework validates user registration and login workflows including field-le
 
 Tech Stack
 
-    Java 24
+    Java 17
     
     Selenium WebDriver
     
@@ -14,7 +14,7 @@ Tech Stack
     
     Gradle
     
-    JUnit 4
+    JUnit 5
 
 How to run
 
