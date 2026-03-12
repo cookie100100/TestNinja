@@ -21,7 +21,7 @@ dependencies {
     testImplementation( "io.cucumber:cucumber-java:7.14.0")
     testImplementation( "io.cucumber:cucumber-junit-platform-engine:7.14.0")
     testImplementation("org.junit.platform:junit-platform-suite:1.10.2")
-    testImplementation( "io.github.bonigarcia:webdrivermanager:5.7.0")
+    testImplementation( "io.github.bonigarcia:webdrivermanager:6.3.3")
     testImplementation("org.slf4j:slf4j-api:2.0.17")
     testImplementation("ch.qos.logback:logback-classic:1.5.31")
 }
