@@ -42,7 +42,6 @@ public abstract class GenericFormWrapper<F extends GenericFormWrapper<F>>{
         return self();
     }
     protected boolean waitUntilVisible(By locator, int seconds){
-        log.debug("Waiting until visibility of element '{}'...", locator);
         try{
             new WebDriverWait(driver, Duration.ofSeconds(seconds))
                     .until(d-> {
